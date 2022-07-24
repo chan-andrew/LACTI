@@ -1,0 +1,23 @@
+Olivia notes to Andrew 2022-07-24
+
+Python file names:
+- there should be no spaces in your python filenames
+- this is good practice because spacing could be messed up by a user who accidentally presses 2 spaces or forgets
+
+new stuff.py --> new_stuff.py
+button test.py --> button_test.py
+
+or even having a folder called test/ that you use to make small scripts to test single functions
+
+README.md
+- it is important to fill this out ahead of starting a project
+- your readme tells users how to run your code
+- in your case, there should be a line in the readme that says "type python Lacti_data_viewer.py" to start the app
+- it can also tell me behavior is expected with screenshots
+- Readmes are great to complete *FULLY* with examples because they are also what people who don't code look at
+
+STYLE
+- keep your text under 80 characters on each line -- you can add this in vscode so you see a faint line at
+80 characters -- good practice for sharing code
+- remove the spaces between "=" in setting function parameters
+- they're ok outside of parenthesis like in variable assignment

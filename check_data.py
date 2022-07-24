@@ -222,6 +222,94 @@ def check_data(data_path):
 
   return 0
 
+# TODO: add foldername as an input path, or use a defult ./results path
+def display_main_figure(paths):
+  # read the data
+  logdata = read_log(paths[0])
+  dcm = read_dms_dat_nrows(paths[1])
+  row = 40 # set in the original script
+
+  # where to grab data
+  indStart = round(0.4/(1e-6)) # 400000
+  indEnd = len(logdata.loc[:,'Timestamp[us]'])-100
+
+  # compute correct time axis
+  timeLog  = np.arange(1, len(logdata.loc[:,'Timestamp[us]'])) * 1.0e-6
+  dd       = np.mean(np.mean(np.mean(dcm['FloatProjectionData'][300:400,:,:])))
+  KV       = np.transpose(round(logdata.loc[:,'High_Voltage[V]'][indStart:indEnd]/1000))
+  PD       = np.transpose(-logdata.loc[:,'Analog_In_2[mV]'][indStart:indEnd])
+  time     = timeLog[indStart:indEnd] - timeLog[indStart]
+  IPsignal = logdata.loc[:,'DMS_Even_Rea[0,1]'][indStart:indEnd]
+  nx, ny, nz = dcm['FloatProjectionData'].shape
+
+  # plot the signals
+  plt.figure(figsize=(11.5, 6))
+  plt.subplot2grid((2, 4), (0, 0))
+  # plt.hist(dcm['IntegrationPeriod'], 100) # bins=100
+  low_ip = dcm['IntegrationPeriod'][1:-1:2]
+  high_ip = dcm['IntegrationPeriod'][2:-1:2]
+  bins = np.linspace(200,600,100)
+  plt.hist(low_ip, bins, alpha=0.5, label='low')
+  plt.hist(high_ip, bins, alpha=0.5, label='high')
+  plt.xlabel('IP [us]')
+  plt.ylabel('frequency')
+  plt.legend()
+  plt.title('IP')
+
+  # plot the projection for a single detector at row 40, col 341
+  plt.subplot2grid((2, 4), (0, 1))
+  ys = dcm['FloatProjectionData'][341, row, :].squeeze()
+  plt.plot(ys)
+  plt.xlim([150, 200]) # views ranges from 1-nViews
+  plt.title('Profile of projection at (40,341)')
+  plt.xlabel('view')
+  plt.ylabel('DMS signal for single pixel')
+  plt.ylim([np.mean(ys)-3*np.std(ys), np.mean(ys)+3*np.std(ys)])
+
+  plt.subplot2grid((2, 4), (0, 2), colspan=2)
+  plt.imshow(np.transpose(dcm['FloatProjectionData'][:, row, 1:-1:2].squeeze()),
+              vmin=0, vmax= 0.5, aspect='auto', cmap='gray')
+  plt.title('dms low')
+  plt.xlabel('columns')
+  plt.ylabel('views')
+  plt.xlim([1, 672])
+  plt.ylim([nz/2-99, nz/2])
+
+  # Will see either switching or no switching
+  plt.subplot2grid((2, 4), (1, 0))
+  plt.plot(time, KV)
+  plt.plot(time, np.transpose(IPsignal*max(KV)))
+  plt.title('Genrator kVp')
+  plt.xlabel('time')
+  plt.ylabel('voltage [kVp]')
+  plt.xlim([0.1, 0.102]) # time ranges from time[0] to time[-1]
+  plt.ylim([60, 150])
+  plt.grid()
+
+  # refrence diode detector
+  plt.subplot2grid((2, 4), (1, 1))
+  plt.plot(time, PD)
+  plt.title('photodiode signal')
+  plt.xlabel('time')
+  plt.ylabel('voltage [mV]')
+  plt.xlim([0.1, 0.102]) # time ranges from time[0] to time[-1]
+  plt.grid()
+
+  plt.subplot2grid((2, 4), (1, 2), colspan=2)
+  plt.imshow(np.transpose(dcm['FloatProjectionData'][:,row, 2:-1:2].squeeze()),
+              vmin=0, vmax= 0.5, aspect='auto', cmap='gray')
+  plt.title('dms high')
+  plt.xlabel('columns')
+  plt.ylabel('views')
+  plt.xlim([1, 672])
+  plt.ylim([nz/2-99, nz/2])
+
+  plt.tight_layout()
+  # TODO: 
+  # plt.savefig(foldername)
+  plt.show()
+
+
 # Checks the directory path has one .dat and one .csv file
 # Returns the path to those files in an array if true
 # or an empty array if false
