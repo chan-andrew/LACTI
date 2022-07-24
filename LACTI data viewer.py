@@ -3,6 +3,7 @@ from tkinter import *
 from tkinter import filedialog
 from PIL import ImageTk, Image
 import check_data
+import time
 
 # function for opening folders
 def browseFiles():
@@ -22,9 +23,13 @@ def browseFiles():
         # make this label RED
     # Change label contents
     else:
+        # not sure why, but this doesn't immediately update the label
         label_file_explorer.configure(text="Folder Opened: " + foldername)
-        # proceed to check_data.check_data(foldername)
         # open the 2nd figure
+        check_data.display_main_figure(data_paths)
+        # save the figure -- plt.savefig() in the foldername path
+        #   EDIT the display_main_figure() function to take in the foldername
+        #   and plt.savefig() to that folder
 
 
 # Create the root window
@@ -40,15 +45,16 @@ window.geometry("700x500")
 window.config(background = "white")
 
 # Create a File Explorer label
-label_file_explorer = Label(window, text = "Select Browse Files to select files. Select Exit to exit the application.", width = 100, height = 4, fg = "blue")
-button_explore = Button(window, text = "Select Data Folder", command = browseFiles)
-button_exit = Button(window, text = "Exit", command = exit)
+label_file_explorer = Label(window, text="Select Browse Files to select " + \
+                            "files. Select Exit to exit the application.",
+                            width = 100, height = 4, fg = "blue")
+button_explore = Button(window, text="Select Data Folder", command=browseFiles)
+button_exit = Button(window, text="Exit", command=exit)
 
 # placement of buttons using grids
-label_file_explorer.grid(column = 1, row = 1)
-button_explore.grid(column = 1, row = 2)
-button_exit.grid(column = 1,row = 3)
-
+label_file_explorer.grid(column=1, row=1)
+button_explore.grid(column=1, row=2)
+button_exit.grid(column=1, row=3)
 
 frame = Frame(window, width=100, height=50)
 
@@ -61,6 +67,4 @@ frame.place(anchor='center', relx=0.25, rely=0.25)
 # label = Label(frame, image = img)
 # label.pack()
 
-window.mainloop()
-  
 window.mainloop()
