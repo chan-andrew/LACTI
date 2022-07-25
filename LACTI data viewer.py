@@ -26,7 +26,7 @@ def browseFiles():
         # not sure why, but this doesn't immediately update the label
         label_file_explorer.configure(text="Folder Opened: " + foldername)
         # open the 2nd figure
-        check_data.display_main_figure(data_paths)
+        check_data.display_main_figure(data_paths, foldername)
         # save the figure -- plt.savefig() in the foldername path
         #   EDIT the display_main_figure() function to take in the foldername
         #   and plt.savefig() to that folder

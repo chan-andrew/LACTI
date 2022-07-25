@@ -223,7 +223,7 @@ def check_data(data_path):
   return 0
 
 # TODO: add foldername as an input path, or use a defult ./results path
-def display_main_figure(paths):
+def display_main_figure(paths, foldername):
   # read the data
   logdata = read_log(paths[0])
   dcm = read_dms_dat_nrows(paths[1])
@@ -306,7 +306,7 @@ def display_main_figure(paths):
 
   plt.tight_layout()
   # TODO: 
-  # plt.savefig(foldername)
+  plt.savefig(foldername)
   plt.show()
 
 
