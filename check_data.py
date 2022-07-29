@@ -8,6 +8,8 @@ import pandas as pd
 import glob
 import os.path
 import matplotlib.pyplot as plt
+from matplotlib.pyplot import figure
+from matplotlib.widgets import Button, RadioButtons, CheckButtons
 
 # Script adapted from Heiner to read DMS data (.dat) which is a binary file
 # Each projection contains a header 64 entries (unit16) and detector data
@@ -306,8 +308,99 @@ def display_main_figure(paths, foldername):
 
   plt.tight_layout()
   # TODO: 
-  plt.savefig(foldername)
+  # plt.savefig(foldername) UNCOMMENT THIS AT THE END
+  
+  #button for IP
+  ip_button = plt.axes([0.17, 0.535, 0.04, 0.02]) #xposition,yposition,width,height
+  enlarge_button = Button(ip_button, "Enlarge", color="white", hovercolor="green")
+  
+  def enlarge(val):
+    plt.figure(figsize=(11.5, 6))
+    plt.subplot2grid((1, 1), (0, 0))
+    # plt.hist(dcm['IntegrationPeriod'], 100) # bins=100
+    low_ip = dcm['IntegrationPeriod'][1:-1:2]
+    high_ip = dcm['IntegrationPeriod'][2:-1:2]
+    bins = np.linspace(200,600,100)
+    plt.hist(low_ip, bins, alpha=0.5, label='low')
+    plt.hist(high_ip, bins, alpha=0.5, label='high')
+    plt.xlabel('IP [us]')
+    plt.ylabel('frequency')
+    plt.legend()
+    plt.title("IP")
+    plt.show()
+  enlarge_button.on_clicked(enlarge)
+  
+  #button for Generator kVp
+  kvp_button = plt.axes([0.17, 0.045, 0.04, 0.02]) #xposition,yposition,width,height
+  enlarge_button2 = Button(kvp_button, "Enlarge", color="white", hovercolor="green")
+  
+  def enlarge2(val):
+    plt.figure(figsize=(11.5, 6))
+    plt.subplot2grid((1, 1), (0, 0))
+    plt.plot(time, KV)
+    plt.plot(time, np.transpose(IPsignal*max(KV)))
+    plt.title('Genrator kVp')
+    plt.xlabel('time')
+    plt.ylabel('voltage [kVp]')
+    plt.xlim([0.1, 0.102]) # time ranges from time[0] to time[-1]
+    plt.ylim([60, 150])
+    plt.grid()
+    plt.title("Generator kVp")
+    plt.show()
+  enlarge_button2.on_clicked(enlarge2)
+    
+  #button for profile of projection
+  proj_button = plt.axes([0.425, 0.535, 0.04, 0.02]) #xposition,yposition,width,height
+  enlarge_button3 = Button(proj_button, "Enlarge", color="white", hovercolor="green")
+  
+  def enlarge3(val):
+    plt.figure(figsize=(11.5, 6))
+    plt.subplot2grid((0, 0), (0, 0))
+    ys = dcm['FloatProjectionData'][341, row, :].squeeze()
+    plt.plot(ys)
+    plt.xlim([150, 200]) # views ranges from 1-nViews
+    plt.xlabel('view')
+    plt.ylabel('DMS signal for single pixel')
+    plt.ylim([np.mean(ys)-3*np.std(ys), np.mean(ys)+3*np.std(ys)])
+    plt.title("Profile of projection")
+    plt.show()
+  enlarge_button3.on_clicked(enlarge3)
+  
+  #button for photodiode signal
+  photodi_button = plt.axes([0.425, 0.045, 0.04, 0.02]) #xposition,yposition,width,height
+  enlarge_button4 = Button(photodi_button, "Enlarge", color="white", hovercolor="green")
+  
+  def enlarge4(val):
+    plt.figure(figsize=(11.5, 6))
+    plt.subplot2grid((1, 1), (0, 0))
+    plt.plot(time, PD)
+    plt.xlabel('time')
+    plt.ylabel('voltage [mV]')
+    plt.xlim([0.1, 0.102]) # time ranges from time[0] to time[-1]
+    plt.grid()
+    plt.title("photodiode signal")
+    plt.show()
+  enlarge_button4.on_clicked(enlarge4)
+    
   plt.show()
+  
+  #def enlarge2(val):
+    #plt.figure()
+    #plt.title("Generator kVp")
+    #plt.show()
+  #enlarge_button2.on_clicked(enlarge2)
+  
+  #def enlarge3(val):
+    #plt.figure()
+    #plt.title("Profile of projection")
+    #plt.show()
+  #enlarge_button3.on_clicked(enlarge3)
+  
+  #def enlarge4(val):
+    #plt.figure()
+    #plt.title("photodiode signal")
+    #plt.show()
+  #enlarge_button4.on_clicked(enlarge5)
 
 
 # Checks the directory path has one .dat and one .csv file
