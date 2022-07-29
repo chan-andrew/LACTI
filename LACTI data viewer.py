@@ -1,6 +1,12 @@
+# chan-andrew
+# GUI to view CT scan results
+# developed for Penn Medicine and Philips 
+
 #import all needed libraries
 from tkinter import *
 from tkinter import filedialog
+from tkinter.filedialog import askopenfilename
+from tkinter.filedialog import askdirectory
 from PIL import ImageTk, Image
 import check_data
 import time
@@ -30,6 +36,7 @@ def browseFiles():
         # save the figure -- plt.savefig() in the foldername path
         #   EDIT the display_main_figure() function to take in the foldername
         #   and plt.savefig() to that folder
+
 
 
 # Create the root window
@@ -63,8 +70,13 @@ frame.place(anchor='center', relx=0.25, rely=0.25)
 # Create an object of tkinter ImageTk
 # img = ImageTk.PhotoImage(Image.open("PennMedicineLogo.png"))
 
+
 # Create a Label Widget to display the text or Image
 # label = Label(frame, image = img)
 # label.pack()
+
+# screenshot code (add this when you open the main figure page) this will take a ss of the main window (currenty figure 2 in check data)
+# myScreenshot = pyautogui.screenshot()
+# myScreenshot.save('C:/Users/Andrew/.vscode/GUI TKINTER/LACTI data viewer/')
 
 window.mainloop()
